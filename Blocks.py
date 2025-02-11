@@ -8,6 +8,7 @@ import engine_draw # type: ignore
 from engine_draw import Color # type: ignore
 
 offRot = [-90,-180,-270,90,180,270]
+portals = [Vector2(2,1),Vector2(2,2),Vector2(2,3),Vector2(2,4)]
 
 blocks = TextureResource("Images/blocks.bmp")
 
@@ -24,6 +25,11 @@ class block:
                 
         self.pos.x = self.pos.x * 16# - 8
         self.pos.y = self.pos.y * 16 + 5
+        
+        if self.cord in portals:
+            self.portal = True
+        elif self.cord not in portals:
+            self.portal = False
         
         self.Block = getBlock(cord)
         self.Block.position = self.pos

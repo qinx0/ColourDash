@@ -119,12 +119,6 @@ def gameOver():
     global running
     running = False
 
-def moveScene(movespeed):
-    for x in scene:
-        x.pos.x -= movespeed.x
-        if x.pos.x < -64 - 8:
-            x.pos.x = 64 + 8
-
 def movechar():
     global rumbling
     global velocityY
