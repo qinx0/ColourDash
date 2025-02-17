@@ -11,6 +11,7 @@ offRot = [-90,-180,-270,90,180,270]
 portals = [Vector2(2,1),Vector2(2,2),Vector2(2,3),Vector2(2,4)]
 
 blocks = TextureResource("Images/blocks.bmp")
+portalsimg = TextureResource("Images/portals.bmp")
 
 # blocks
 class block:
@@ -27,19 +28,24 @@ class block:
         self.pos.y = self.pos.y * 16 + 5
         
         if self.cord in portals:
+            print("PORTALLLL")
             self.portal = True
         elif self.cord not in portals:
+            print("Not portal")
             self.portal = False
         
-        self.Block = getBlock(cord)
+        self.Block = getBlock(cord, self.portal)
         self.Block.position = self.pos
         self.Block.rotation = self.rot
         
         def __repr__(self):
             return f"block(cord={self.cord}, pos={self.pos})"
         
-def getBlock(cord):
-    b = Sprite2DNode(texture=blocks, frame_count_x=6, frame_count_y=6, transparent_color = Color(1,0,1), playing=False)
+def getBlock(cord, portal):
+    if portal == True:
+        b = Sprite2DNode(texture=portalsimg, frame_count_x=6, frame_count_y=6, transparent_color = Color(1,0,1), playing=False)
+    else:
+        b = Sprite2DNode(texture=blocks, frame_count_x=6, frame_count_y=6, transparent_color = Color(1,0,1), playing=False)
     b.frame_current_x = int(cord.x)
     b.frame_current_y = int(cord.y)
     return b

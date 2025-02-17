@@ -25,7 +25,8 @@ jumpForce = -10
 groundLevel = 37;
 scene = levelParser.parse_json_file("level.json")
 for i in scene:
-    print(i.tag)
+    print(i.tag + str(i.portal))
+    
 gameover = False
 running = True
 
