@@ -1,0 +1,11 @@
+[
+    ["Vector2(1,1)", "Vector2(5,2)", true, "Deadly", 0],
+    ["Vector2(1,1)", "Vector2(6,2)", true, "Deadly", 0],
+    ["Vector2(2,0)", "Vector2(7,2)", false, "Block", 0],
+    ["Vector2(1,0)", "Vector2(8,2)", false, "Block", 0],
+    ["Vector2(1,0)", "Vector2(9,2)", false, "Block", 0],
+    ["Vector2(1,0)", "Vector2(10,2)", false, "Block", 0],
+    ["Vector2(1,0)", "Vector2(11,2)", false, "Block", 0],
+    ["Vector2(2,0)", "Vector2(12,2)", false, "Block", 270],
+    ["Vector2(1,2)", "Vector2(12,0)", false, "Block", 0]
+]
