@@ -2,7 +2,7 @@ copy files from ubuntu to here:
 docker cp modest_sinoussi:/root/mp-thumby/TinyCircuits-Tiny-Game-Engine/filesystem/ ~/Desktop/mp-thumby
 
 copy files from here to ubuntu:
-docker cp ~/Desktop/mp-thumby/filesystem modest_sinoussi:/root/mp-thumby/TinyCircuits-Tiny-Game-Engine
+docker cp ~/Documents/Thumby-Colour-Games/ColourDash modest_sinoussi:/root/mp-thumby/TinyCircuits-Tiny-Game-Engine/filesystem/Games/
 
 run simulator: in docker modest_sinoussi
 #open xquartz
@@ -10,3 +10,12 @@ cd root/mp-thumby/TinyCircuits-Tiny-Game-Engine/filesystem
 export DISPLAY=host.docker.internal:0
 unset XAUTHORITY
 ../micropython_loop ../../ports/unix/build-standard/micropython -X heapsize=2617152 main.py
+
+start docker interactive:
+docker start modest_sinoussi && docker exec -it modest_sinoussi bash
+
+Full command to just run in terminal:
+docker start modest_sinoussi && docker exec -it modest_sinoussi bash -c "cd root/mp-thumby/TinyCircuits-Tiny-Game-Engine/filesystem && export DISPLAY=host.docker.internal:0 && unset XAUTHORITY && ../micropython_loop ../../ports/unix/build-standard/micropython -X heapsize=2617152 main.py"
+
+Full command + copy updated files:
+docker start modest_sinoussi && docker cp ~/Documents/Thumby-Colour-Games/ColourDash modest_sinoussi:/root/mp-thumby/TinyCircuits-Tiny-Game-Engine/filesystem/Games/ && docker exec -it modest_sinoussi bash -c "cd root/mp-thumby/TinyCircuits-Tiny-Game-Engine/filesystem && export DISPLAY=host.docker.internal:0 && unset XAUTHORITY && ../micropython_loop ../../ports/unix/build-standard/micropython -X heapsize=2617152 main.py"
