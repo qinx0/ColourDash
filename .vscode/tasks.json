@@ -1,0 +1,27 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Main.py (Thumby Colour)",
+            "type": "shell",
+            "command": "docker start modest_sinoussi && docker cp ${workspaceFolder} modest_sinoussi:/root/mp-thumby/TinyCircuits-Tiny-Game-Engine/filesystem/Games/ && docker exec -it modest_sinoussi bash -c 'cd root/mp-thumby/TinyCircuits-Tiny-Game-Engine/filesystem && export DISPLAY=host.docker.internal:0 && unset XAUTHORITY && ../micropython_loop ../../ports/unix/build-standard/micropython -X heapsize=2617152 Games/${workspaceFolderBasename}/main.py'",
+            "problemMatcher": [],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Run emulator (Thumby Colour)",
+            "type": "shell",
+            "command": "docker start modest_sinoussi && docker cp ${workspaceFolder} modest_sinoussi:/root/mp-thumby/TinyCircuits-Tiny-Game-Engine/filesystem/Games/ && docker exec -it modest_sinoussi bash -c 'cd root/mp-thumby/TinyCircuits-Tiny-Game-Engine/filesystem && export DISPLAY=host.docker.internal:0 && unset XAUTHORITY && ../micropython_loop ../../ports/unix/build-standard/micropython -X heapsize=2617152 main.py'",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
