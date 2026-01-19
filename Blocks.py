@@ -6,6 +6,7 @@ from engine_math import Vector2 # type: ignore
 import math
 import engine_draw # type: ignore
 from engine_draw import Color # type: ignore
+import debug
 
 rotDeg = [-90,-180,-270,90,180,270]
 # exactRotRad = [-1.57079633,-3.14159265,-4.71238898,1.57079633,3.14159265,4.71238898]
@@ -27,11 +28,6 @@ portals = [Vector2(1,2),Vector2(2,2),Vector2(3,2),Vector2(4,2)]
 blocks = TextureResource("Images/blocks.bmp")
 portalsimg = TextureResource("Images/portals.bmp")
 
-def centredTextPrintout(Text, width):
-    padding = (width - len(Text)) // 2
-    line = "-" * padding + Text + "-" * padding
-    return line
-
 # blocks
 class block:
     def __init__(self, cord, pos, deadly, portal, tag, rot):
@@ -48,8 +44,7 @@ class block:
         self.pos.x = self.pos.x * 16# - 8
         self.pos.y = self.pos.y * 16 + 5
 
-        # Cool little printout
-        print(centredTextPrintout("Block Info", 75))
+        debug.centredTextPrintout("Block Info", 75)
 
         # Correct rotation and position offset to be accurate
         if self.rot in rotDeg:
@@ -90,12 +85,12 @@ class block:
         self.Block.position = self.pos
         self.Block.rotation = self.rot
         self.Block.scale = self.scale
-        print("---------------------------------------------------------------------------")
+        debug.dashedSeperator(75)
         print(f'Block rotation is {self.Block.rotation}')
         print(f'Block scale is (x{self.Block.scale.x}, y{self.Block.scale.y})')
         print(f'Portal: {self.portal}')
         print(f'Block texture Coords: (x{self.cord.x}, y{self.cord.y})')
-        print("---------------------------------------------------------------------------\n")
+        debug.dashedSeperator(75, True)
         
         def __repr__(self):
             return f"block(cord={self.cord}, pos={self.pos})"
