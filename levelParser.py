@@ -16,10 +16,10 @@ def parse_block(block_data):
     cords = parse_vector(block_data[0])
     pos = parse_vector(block_data[1])
     deadly = bool(block_data[2])
-    tag = block_data[3]
-    rot = block_data[4]
-    
-    return block(cords, pos, deadly, tag, rot)
+    tag = block_data[4]
+    rot = block_data[5]
+    portal = bool(block_data[3])    
+    return block(cords, pos, deadly, portal, tag, rot)
 
 def parse_json_file(filename: str):
     """Reads a JSON file and returns an array of Block objects."""

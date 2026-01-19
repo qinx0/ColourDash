@@ -22,14 +22,19 @@ offsetRot = [Vector2(0,-1),Vector2(-1,-1),Vector2(0,-1),Vector2(-1,0),Vector2(-1
 radRotrounding = 1
 #rouding radian rotation check:
 #1 decimal: nope
-portals = [Vector2(2,1),Vector2(2,2),Vector2(2,3),Vector2(2,4)]
+portals = [Vector2(1,2),Vector2(2,2),Vector2(3,2),Vector2(4,2)]
 
 blocks = TextureResource("Images/blocks.bmp")
 portalsimg = TextureResource("Images/portals.bmp")
 
+def centredTextPrintout(Text, width):
+    padding = (width - len(Text)) // 2
+    line = "-" * padding + Text + "-" * padding
+    return line
+
 # blocks
 class block:
-    def __init__(self, cord, pos, deadly, tag, rot):
+    def __init__(self, cord, pos, deadly, portal, tag, rot):
         if not isinstance(cord, Vector2) or not isinstance(pos, Vector2) or not isinstance(tag, str):
             raise TypeError("'cord' and 'pos' must be of type 'Vector2'")
         self.cord = cord
@@ -38,10 +43,15 @@ class block:
         self.tag = tag
         self.rot = rot
         self.scale = Vector2(1,1)
+        self.portal = portal
 
         self.pos.x = self.pos.x * 16# - 8
         self.pos.y = self.pos.y * 16 + 5
 
+        # Cool little printout
+        print(centredTextPrintout("Block Info", 75))
+
+        # Correct rotation and position offset to be accurate
         if self.rot in rotDeg:
             if self.rot > 0:
                 print(f'Changed rot from: {rot} to {exactRotRad[rotDeg.index(rot)]}, Math.radians would return: {math.radians(self.rot)}')
@@ -55,6 +65,18 @@ class block:
             self.rot = exactRotRad[rotDeg.index(rot)]
             self.pos.x += offsetRot[rotDeg.index(rot)].x
             self.pos.y += offsetRot[rotDeg.index(rot)].y
+        else: print("Rotation is 0, not offsetting")
+
+            # Check if portal and change sprite accordingly
+        if self.cord in portals and self.tag == "Portal":
+            self.portal = True
+            if portals.index(cord) - 1 > 1:
+                self.cord.x = portals.index(cord) - 2
+                self.cord.y = 1
+            else:
+                self.cord.x = portals.index(cord) - 1
+                self.cord.y = 0
+            # else: self.portal = False
                 
             # print(f'Changed rot from: {rot} to {round(exactRotRad[rotDeg.index(rot)],radRotrounding)} rounded to {radRotrounding}, Math.radians would return: {math.radians(self.rot)}')
             # self.rot = round(exactRotRad[rotDeg.index(rot)],radRotrounding)
@@ -63,27 +85,24 @@ class block:
 
         # self.rot = math.radians(rot)
          
-        
-        if self.cord in portals:
-            print("PORTALLLL")
-            self.portal = True
-        elif self.cord not in portals:
-            print("Not portal")
-            self.portal = False
-        
-        self.Block = getBlock(cord, self.portal)
+                
+        self.Block = getBlock(self.cord, self.portal)
         self.Block.position = self.pos
         self.Block.rotation = self.rot
         self.Block.scale = self.scale
+        print("---------------------------------------------------------------------------")
         print(f'Block rotation is {self.Block.rotation}')
         print(f'Block scale is (x{self.Block.scale.x}, y{self.Block.scale.y})')
+        print(f'Portal: {self.portal}')
+        print(f'Block texture Coords: (x{self.cord.x}, y{self.cord.y})')
+        print("---------------------------------------------------------------------------\n")
         
         def __repr__(self):
             return f"block(cord={self.cord}, pos={self.pos})"
         
 def getBlock(cord, portal):
     if portal == True:
-        b = Sprite2DNode(texture=portalsimg, frame_count_x=6, frame_count_y=6, transparent_color = Color(1,0,1), playing=False)
+        b = Sprite2DNode(texture=portalsimg, frame_count_x=2, frame_count_y=2, transparent_color = Color(1,0,1), playing=False)
     else:
         b = Sprite2DNode(texture=blocks, frame_count_x=6, frame_count_y=6, transparent_color = Color(1,0,1), playing=False)
     b.frame_current_x = int(cord.x)
