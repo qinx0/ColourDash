@@ -1,3 +1,6 @@
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA Geometry Dash copy made with TinyCircuits Tiny-Game-Engine for the Thumby Colour
-
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA Geometry Dash copy made with TinyCircuits Tiny-Game-Engine for the Thumby Colour
+Somewhat a demake of Geometry Dash for the Thumby Colour from TinyCircuits
+Features:
+ - [x] Loading level (only from level.json)
+ - [x] Platformer mode
+ - [x] Portals (Half made)
+ - [ ] 
