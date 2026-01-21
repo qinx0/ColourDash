@@ -3,4 +3,4 @@ Features:
  - [x] Loading level (only from level.json)
  - [x] Platformer mode
  - [x] Portals (Half made)
- - [ ] 
+ - [ ] Editing level
