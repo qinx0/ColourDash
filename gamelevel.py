@@ -45,78 +45,52 @@ engine.fps_limit(60)
 background_texture = TextureResource("Images/bg.bmp")
 engine_draw.set_background(background_texture )
 
-def checkCollision():
-    for obj in scene:
-        global running
-        global velocityY
-        global isJumping
-        
-        leftA = cube.position.x - 8
-        rightA = cube.position.x + 8
-        topA = cube.position.y - 8
-        bottomA = cube.position.y + 8
+def getAABB(pos, half=8):
+    return (
+        pos.x - half,  # left
+        pos.x + half,  # right
+        pos.y - half,  # top
+        pos.y + half   # bottom
+    )
 
-        leftB = obj.pos.x -8
-        rightB = obj.pos.x + 8
-        topB = obj.pos.y - 8
-        bottomB = obj.pos.y + 8
-        
-        isCollidingVertically = False
-        if not obj.deadly:
-            
-            if bottomA > topB and topA < topB:
-                if rightA > leftB and leftA < rightB:  # Ensure horizontal overlap
-                # if bottomA > topB and topA < topB:  # Hitting the top of the block
-                    cube.position.y = topB - 8
-                    isJumping = False
-                    isCollidingVertically = True
-                    velocityY = 0
-                elif topA < bottomB and bottomA > bottomB:  # Hitting the bottom of the block
-                    cube.position.y = bottomB + 8
-                    velocityY = 0
-                    isCollidingVertically = True
-            
-            if not isCollidingVertically:
-                # if not cube.position.x < -64-8 and cube.position.x > 64+8:
-                if rightA > leftB and leftA < leftB and bottomA > topB and topA < bottomB:
-                    cube.position.x = leftB - 8
-                    # cube.position = Vector2(-32, groundLevel+8)
-                elif leftA < rightB and rightA > rightB and bottomA > topB and topA < bottomB:
-                    cube.position.x = rightB + 8
-                    # cube.position = Vector2(-32, groundLevel+8)
-        else:
-            leftB = obj.pos.x - 7
-            rightB = obj.pos.x + 7
-            topB = obj.pos.y - 7
-            bottomB = obj.pos.y + 7
-            if bottomA > topB and topA < topB:
-                if rightA > leftB and leftA < rightB:  # Ensure horizontal overlap
-                # if bottomA > topB and topA < topB:  # Hitting the top of the block
-                    isJumping = False
-                    isCollidingVertically = True
-                    velocityY = 0
-                    #running = False
-                    print("colliDED")
-                    restartLevel()
-                elif topA < bottomB and bottomA > bottomB:  # Hitting the bottom of the block
-                    velocityY = 0
-                    isCollidingVertically = True
-                    #running = False
-                    print("colliDED")
-                    restartLevel()
-            
-            if not isCollidingVertically:
-                # if not cube.position.x < -64-8 and cube.position.x > 64+8:
-                if rightA > leftB and leftA < leftB and bottomA > topB and topA < bottomB:
-                    #running = False
-                    print("colliDED")
-                    restartLevel()
-                    # cube.position = Vector2(-32, groundLevel+8)
-                elif leftA < rightB and rightA > rightB and bottomA > topB and topA < bottomB:
-                    #running = False
-                    print("colliDED")
-                    restartLevel()
-                    # cube.position = Vector2(-32, groundLevel+8)
+def overlaps(aL, aR, aT, aB, bL, bR, bT, bB):
+    return aR > bL and aL < bR and aB > bT and aT < bB
+
+def checkCollision():
+    global velocityY, isJumping
+
+    aL, aR, aT, aB = getAABB(cube.position)
+
+    for obj in scene:
+        half = getattr(obj, 'hitbox_half', 8)
+        bL, bR, bT, bB = getAABB(obj.pos, half)
+
+        if not overlaps(aL, aR, aT, aB, bL, bR, bT, bB):
+            continue  # No collision at all, skip
+
+        if obj.deadly:
+            restartLevel()
+            return  # No point checking more
+
+        # Figure out overlap depth on each axis
+        overlapTop    = aB - bT  # how far A has gone into B from the top
+        overlapBottom = bB - aT  # how far A has gone into B from the bottom
+        overlapLeft   = aR - bL
+        overlapRight  = bR - aL
+
+        minOverlap = min(overlapTop, overlapBottom, overlapLeft, overlapRight)
+
+        if minOverlap == overlapTop:
+            cube.position.y = bT - 8
+            velocityY = 0
+            isJumping = False
+        elif minOverlap == overlapBottom:
+            cube.position.y = bB + 8
+            velocityY = 0
+        elif minOverlap == overlapLeft:
+            cube.position.x = bL - 8
+        elif minOverlap == overlapRight:
+            cube.position.x = bR + 8
 
 def gameOver():
     global running
