@@ -19,3 +19,6 @@ docker start modest_sinoussi && docker exec -it modest_sinoussi bash -c "cd root
 
 Full command + copy updated files:
 docker start modest_sinoussi && docker cp ~/Documents/Thumby-Colour-Games/ColourDash modest_sinoussi:/root/mp-thumby/TinyCircuits-Tiny-Game-Engine/filesystem/Games/ && docker exec -it modest_sinoussi bash -c "cd root/mp-thumby/TinyCircuits-Tiny-Game-Engine/filesystem && export DISPLAY=host.docker.internal:0 && unset XAUTHORITY && ../micropython_loop ../../ports/unix/build-standard/micropython -X heapsize=2617152 main.py"
+
+for repl with thumby colour:
+import engine_draw; engine_draw.update()
