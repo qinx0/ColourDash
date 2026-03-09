@@ -28,6 +28,12 @@ portals = [Vector2(1,2),Vector2(2,2),Vector2(3,2),Vector2(4,2)]
 blocks = TextureResource("Images/blocks.bmp")
 portalsimg = TextureResource("Images/portals.bmp")
 
+def portalIndex(cord):
+    for i, p in enumerate(portals):
+        if p.x == cord.x and p.y == cord.y:
+            return i
+    return -1
+
 # blocks
 class block:
     def __init__(self, cord, pos, deadly, portal, tag, rot):
@@ -40,6 +46,11 @@ class block:
         self.rot = rot
         self.scale = Vector2(1,1)
         self.portal = portal
+        self.hitbox_half = 8  # default
+        if self.deadly:
+            self.hitbox_half = 5
+        if self.portal:
+            self.hitbox_half = Vector2(8, 16)
 
         self.pos.x = self.pos.x * 16# - 8
         self.pos.y = self.pos.y * 16 + 5
@@ -63,14 +74,14 @@ class block:
         else: print("Rotation is 0, not offsetting")
 
             # Check if portal and change sprite accordingly
-        if self.cord in portals and self.tag == "Portal":
-            self.portal = True
-            if portals.index(cord) - 1 > 1:
-                self.cord.x = portals.index(cord) - 2
-                self.cord.y = 1
-            else:
-                self.cord.x = portals.index(cord) - 1
-                self.cord.y = 0
+        if self.portal:
+            idx = portalIndex(cord)
+            self.hitbox_half = Vector2(8, 16)
+            if idx != -1:
+                self.portal = True
+                self.cord.x = idx % 2
+                self.cord.y = idx // 2
+            
             # else: self.portal = False
                 
             # print(f'Changed rot from: {rot} to {round(exactRotRad[rotDeg.index(rot)],radRotrounding)} rounded to {radRotrounding}, Math.radians would return: {math.radians(self.rot)}')

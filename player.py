@@ -15,12 +15,18 @@ groundLevel = 37
 cubeTex = TextureResource("Images/cube.bmp")
 cube = Sprite2DNode(texture=cubeTex, position=Vector2(-64+8, 0))
 
-def getAABB(pos, half=8):
+h = getattr(obj, 'hitbox_half', 8)
+if isinstance(h, Vector2):
+    bL, bR, bT, bB = getAABB(obj.pos, h.x, h.y)
+else:
+    bL, bR, bT, bB = getAABB(obj.pos, h, h)
+
+def getAABB(pos, half_x=8, half_y=8):
     return (
-        pos.x - half,  # left
-        pos.x + half,  # right
-        pos.y - half,  # top
-        pos.y + half   # bottom
+        pos.x - half_x,  # left
+        pos.x + half_x,  # right
+        pos.y - half_y,  # top
+        pos.y + half_y   # bottom
     )
 
 def overlaps(aL, aR, aT, aB, bL, bR, bT, bB):

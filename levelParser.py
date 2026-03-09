@@ -1,6 +1,6 @@
 import json
 import re
-from Blocks import block
+from blocks import block
 from engine_math import Vector2 # type: ignore
 
 def parse_vector(vector_string):
