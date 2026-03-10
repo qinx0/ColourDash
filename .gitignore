@@ -2,4 +2,5 @@ ColourDash.code-workspace
 .DS_Store
 ignore.txt
 .micropico
-.vscode/
+.vscode
+thumby manager

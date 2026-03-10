@@ -12,28 +12,21 @@ def parse_vector(vector_string):
         raise ValueError(f"Invalid vector string: {vector_string}")
 
 def parse_block(block_data):
-    """Parses the block data into a Block object."""
+    """Parses a single block data entry into a Block object."""
     cords = parse_vector(block_data[0])
     pos = parse_vector(block_data[1])
     deadly = bool(block_data[2])
     tag = block_data[4]
     rot = block_data[5]
-    portal = bool(block_data[3])    
+    portal = bool(block_data[3])
     return block(cords, pos, deadly, portal, tag, rot)
+
+def load_raw(filename: str):
+    """Reads a JSON file and returns the raw list without constructing blocks."""
+    with open(filename, 'r') as file:
+        return json.load(file)
 
 def parse_json_file(filename: str):
     """Reads a JSON file and returns an array of Block objects."""
-    with open(filename, 'r') as file:
-        data = json.load(file)
-    
-    # Initialize the scene list
-    scene = []
-    
-    # Iterate through each block in the JSON file and parse it
-    for block_data in data:
-        block = parse_block(block_data)
-        scene.append(block)
-    
-    return scene
-
-# print(parse_json_file("level.json")
+    data = load_raw(filename)
+    return [parse_block(b) for b in data]

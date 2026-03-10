@@ -1,6 +1,6 @@
 import engine # type: ignore
 from engine_nodes import CameraNode # type: ignore
-from engine_resources import WaveSoundResource # type: ignore
+from engine_resources import WaveSoundResource, TextureResource # type: ignore
 import engine_io # type: ignore
 import engine_draw # type: ignore
 from engine_math import Vector2 # type: ignore
@@ -14,20 +14,21 @@ frame = 0
 platformer = True
 running = True
 
-scene = levelParser.parse_json_file("level.json")
-for i in scene:
-    print(i.tag + str(i.portal))
+level = "level.json"
 
+camera = CameraNode()
+
+# --- Load level ___
+scene = levelParser.parse_json_file(level)
+
+# --- Audio ---
 menuloop = WaveSoundResource("Sounds/gdmenuloop.wav")
 engine_audio.set_volume(1.0)
 loop = engine_audio.play(menuloop, 3, True)
 loop.gain = 4.0
 
-camera = CameraNode()
-
+# --- Display ---
 engine.fps_limit(60)
-background_texture = engine_draw.TextureResource("Images/bg.bmp") if hasattr(engine_draw, 'TextureResource') else None
-from engine_resources import TextureResource # type: ignore
 background_texture = TextureResource("Images/bg.bmp")
 engine_draw.set_background(background_texture)
 
