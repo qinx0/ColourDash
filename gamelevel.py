@@ -49,6 +49,7 @@ while running:
                 frame = 0
 
         if engine_io.MENU.is_just_pressed:
+            running = False
             break
 
         camera.position.x = player.cube.position.x

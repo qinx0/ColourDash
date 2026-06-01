@@ -10,8 +10,8 @@ from time import ticks_ms
 from engine_nodes import Sprite2DNode, CameraNode, Text2DNode, Rectangle2DNode # type: ignore
 from engine_math import Vector2 # type: ignore
 
-sys.path.append("Games/ColourDash")
-os.chdir("Games/ColourDash")
+# sys.path.append("Games/ColourDash")
+# os.chdir("Games/ColourDash")
 
 # engine_draw.set_background_color(engine_draw.Color(0.0,0.0,1.0))
 r = False
@@ -41,4 +41,5 @@ while True:
             import gamelevel
             r = True
         if r and not gamelevel.running:
+            r = False
             break
