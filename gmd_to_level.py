@@ -13,12 +13,13 @@ The ground in ColourDash is at y=2 (after 16px scaling + offset).
 
 import json
 import sys
+import blocklist
 from gmdkit import Level
 from gmdkit.mappings import obj_prop
 
 # --- Sprite mapping ---
 # Maps GD object ID -> ColourDash block data
-# cord: [x, y] index into blocks.bmp spritesheet (6x6 grid)
+# cord: (x, y) index into blocks.bmp spritesheet (6x6 grid) via blocklist.py
 # deadly: whether this object kills the player
 # tag: block type tag
 #
@@ -38,16 +39,16 @@ from gmdkit.mappings import obj_prop
 #   13  = ball portal
 
 GD_OBJECT_MAP = {
-    1:  {"cord": [0, 0], "deadly": False, "tag": "Block"},
-    2:  {"cord": [2, 0], "deadly": False, "tag": "Block"},
-    3:  {"cord": [3, 0], "deadly": False, "tag": "Block"},
-    6:  {"cord": [1, 1], "deadly": True,  "tag": "Deadly"},
-    7:  {"cord": [1, 1], "deadly": True,  "tag": "Deadly"},
-    8:  {"cord": [1, 1], "deadly": True,  "tag": "Deadly"},
-    35: {"cord": [1, 2], "deadly": False, "tag": "Portal"},
-    36: {"cord": [2, 2], "deadly": False, "tag": "Portal"},
-    12: {"cord": [3, 2], "deadly": False, "tag": "Portal"},
-    13: {"cord": [4, 2], "deadly": False, "tag": "Portal"},
+    1:  {"cord": blocklist.BLOCK_DEFAULT,       "deadly": False, "tag": "Block"},
+     2:  {"cord": blocklist.GRIDBLOCK_1,         "deadly": False, "tag": "Block"},
+     3:  {"cord": blocklist.GRIDBLOCK_2,         "deadly": False, "tag": "Block"},
+    6:  {"cord": blocklist.SPIKE_NORMAL,        "deadly": True,  "tag": "Deadly"},
+    7:  {"cord": blocklist.SPIKE_NORMAL,        "deadly": True,  "tag": "Deadly"},
+    8:  {"cord": blocklist.SPIKE_NORMAL,        "deadly": True,  "tag": "Deadly"},
+    35: {"cord": blocklist.PORTAL_GRAVITY_DOWN, "deadly": False, "tag": "Portal"},
+    36: {"cord": blocklist.PORTAL_GRAVITY_UP,   "deadly": False, "tag": "Portal"},
+     12: {"cord": blocklist.PORTAL_CUBE,         "deadly": False, "tag": "Portal"},
+     13: {"cord": blocklist.PORTAL_SHIP,         "deadly": False, "tag": "Portal"},
 }
 
 # GD ground baseline in GD units (objects at y=0 sit on the ground floor)

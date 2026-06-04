@@ -48,10 +48,18 @@ def main_loop(camera):
     background_texture = TextureResource("Images/bg.bmp")
     engine_draw.set_background(background_texture)
 
+    if hitboxes:
+        player.playerBodyRect.opacity = 0.3
+        player.playerDeadlyRect.opacity = 0.3
+        for i in scene:
+            i.hitboxRect.opacity = 0.3
+    else:
+        player.playerBodyRect.opacity = 0.0
+        player.playerDeadlyRect.opacity = 0.0
+        for i in scene:
+            i.hitboxRect.opacity = 0.0
+
     while running:
-        if hitboxes:
-            for i in scene:
-                i.hitboxRect.opacity = 0.3
         if engine.tick():
             if player.rumbling:
                 frame += 1

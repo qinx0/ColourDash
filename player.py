@@ -1,9 +1,15 @@
-from engine_nodes import Sprite2DNode # type: ignore
+from engine_nodes import Sprite2DNode, Rectangle2DNode # type: ignore
 from engine_resources import TextureResource # type: ignore
 import engine_io # type: ignore
 from engine_math import Vector2 # type: ignore
 import engine_audio # type: ignore
+import engine_draw
+from engine_draw import Color
 
+PLAYER_HALF_X = 8
+PLAYER_HALF_Y = 8
+DEADLY_HALF_X = 3
+DEADLY_HALF_Y = 3
 moveSpeed = 3.5
 velocityY = 0
 isJumping = False
@@ -14,8 +20,24 @@ groundLevel = 37
 
 cubeTex = TextureResource("Images/cube.bmp")
 cube = Sprite2DNode(texture=cubeTex, position=Vector2(-64+8, 0))
+playerBodyRect = Rectangle2DNode(
+    position = cube.position,
+    width = PLAYER_HALF_X*2,
+    height = PLAYER_HALF_Y*2,
+    color = Color(0,0,1),
+    outline = False,
+    opacity = 0.0
+)
+playerDeadlyRect = Rectangle2DNode(
+    position = cube.position,
+    width = DEADLY_HALF_X*2,
+    height = DEADLY_HALF_Y*2,
+    color = Color(1,0,0),
+    outline = False,
+    opacity = 0.0
+)
 
-def getAABB(pos, half_x=8, half_y=8):
+def getAABB(pos, half_x=PLAYER_HALF_X, half_y=PLAYER_HALF_Y):
     half_x = float(half_x)
     half_y = float(half_y)
     return (
@@ -31,7 +53,8 @@ def overlaps(aL, aR, aT, aB, bL, bR, bT, bB):
 def checkCollision(scene, on_death):
     global velocityY, isJumping
 
-    aL, aR, aT, aB = getAABB(cube.position)
+    bodyL, bodyR, bodyT, bodyB = getAABB(cube.position, PLAYER_HALF_X, PLAYER_HALF_Y)
+    deadlyL, deadlyR, deadlyT, deadlyB = getAABB(cube.position, DEADLY_HALF_X, DEADLY_HALF_Y)
 
     for obj in scene:
         h = getattr(obj, 'hitbox_half', 8)
@@ -40,12 +63,16 @@ def checkCollision(scene, on_death):
         else:
             bL, bR, bT, bB = getAABB(obj.pos, h, h)
 
-        if not overlaps(aL, aR, aT, aB, bL, bR, bT, bB):
-            continue
-
         if obj.deadly:
+            aL, aR, aT, aB = deadlyL, deadlyR, deadlyT, deadlyB
+            if not overlaps(aL, aR, aT, aB, bL, bR, bT, bB):
+                continue
             on_death()
             return
+        else:
+            aL, aR, aT, aB = bodyL, bodyR, bodyT, bodyB
+            if not overlaps(aL, aR, aT, aB, bL, bR, bT, bB):
+                continue
 
         overlapTop    = aB - bT
         overlapBottom = bB - aT
@@ -55,27 +82,27 @@ def checkCollision(scene, on_death):
         minOverlap = min(overlapTop, overlapBottom, overlapLeft, overlapRight)
 
         if minOverlap == overlapTop:
-            cube.position.y = bT - 8
+            cube.position.y = bT - PLAYER_HALF_Y
             velocityY = 0
             isJumping = False
         elif minOverlap == overlapBottom:
-            cube.position.y = bB + 8
+            cube.position.y = bB + PLAYER_HALF_Y
             velocityY = 0
         elif minOverlap == overlapLeft:
-            cube.position.x = bL - 8
+            cube.position.x = bL - PLAYER_HALF_X
         elif minOverlap == overlapRight:
-            cube.position.x = bR + 8
+            cube.position.x = bR + PLAYER_HALF_X
 
 def reset():
     global velocityY, isJumping, rumbling
-    cube.position = Vector2(-64+8, 0)
+    cube.position = Vector2(-64 + PLAYER_HALF_X, 0)
     velocityY = 0
     isJumping = False
     rumbling = False
 
 def restartLevel():
     global velocityY, isJumping, rumbling
-    cube.position = Vector2(-64+8, 0)
+    cube.position = Vector2(-64 + PLAYER_HALF_X, 0)
     velocityY = 0
     isJumping = False
     rumbling = False
@@ -106,3 +133,6 @@ def movechar(scene, platformer):
         cube.position.x -= moveSpeed
     if engine_io.RIGHT.is_pressed and platformer:
         cube.position.x += moveSpeed
+    
+    playerBodyRect.position = cube.position
+    playerDeadlyRect.position = cube.position
