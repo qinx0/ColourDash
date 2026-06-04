@@ -5,7 +5,6 @@ from engine_math import Vector2 # type: ignore
 import engine_audio # type: ignore
 import engine_draw
 from engine_draw import Color
-
 PLAYER_HALF_X = 8
 PLAYER_HALF_Y = 8
 DEADLY_HALF_X = 3
@@ -17,6 +16,7 @@ rumbling = False
 gravity = 1
 jumpForce = -10
 groundLevel = 37
+portalsTouching = set()
 
 cubeTex = TextureResource("Images/cube.bmp")
 cube = Sprite2DNode(texture=cubeTex, position=Vector2(-64+8, 0))
@@ -36,6 +36,11 @@ playerDeadlyRect = Rectangle2DNode(
     outline = False,
     opacity = 0.0
 )
+
+def flipGravity():
+    global gravity
+    if gravity == 1: gravity = -1
+    else: gravity = 1
 
 def getAABB(pos, half_x=PLAYER_HALF_X, half_y=PLAYER_HALF_Y):
     half_x = float(half_x)
@@ -57,11 +62,8 @@ def checkCollision(scene, on_death):
     deadlyL, deadlyR, deadlyT, deadlyB = getAABB(cube.position, DEADLY_HALF_X, DEADLY_HALF_Y)
 
     for obj in scene:
-        h = getattr(obj, 'hitbox_half', 8)
-        if isinstance(h, Vector2):
-            bL, bR, bT, bB = getAABB(obj.pos, h.x, h.y)
-        else:
-            bL, bR, bT, bB = getAABB(obj.pos, h, h)
+        h = getattr(obj, 'hitbox_half', Vector2(8, 8))
+        bL, bR, bT, bB = getAABB(obj.pos, h.x, h.y)
 
         if obj.deadly:
             aL, aR, aT, aB = deadlyL, deadlyR, deadlyT, deadlyB
@@ -69,6 +71,17 @@ def checkCollision(scene, on_death):
                 continue
             on_death()
             return
+        elif obj.portal:
+            aL, aR, aT, aB = bodyL, bodyR, bodyT, bodyB
+            if not overlaps(aL, aR, aT, aB, bL, bR, bT, bB):
+                portalsTouching.discard(id(obj))
+                continue
+            if id(obj) not in portalsTouching:
+                portalsTouching.add(id(obj))
+                if obj.cord.y == 0:
+                    if (obj.cord.x == 0 and gravity == -1) or (obj.cord.x == 1 and gravity == 1):
+                        flipGravity()
+            continue
         else:
             aL, aR, aT, aB = bodyL, bodyR, bodyT, bodyB
             if not overlaps(aL, aR, aT, aB, bL, bR, bT, bB):
@@ -94,18 +107,20 @@ def checkCollision(scene, on_death):
             cube.position.x = bR + PLAYER_HALF_X
 
 def reset():
-    global velocityY, isJumping, rumbling
+    global velocityY, isJumping, rumbling, gravity
     cube.position = Vector2(-64 + PLAYER_HALF_X, 0)
     velocityY = 0
     isJumping = False
     rumbling = False
+    gravity = 1
 
 def restartLevel():
-    global velocityY, isJumping, rumbling
+    global velocityY, isJumping, rumbling, gravity
     cube.position = Vector2(-64 + PLAYER_HALF_X, 0)
     velocityY = 0
     isJumping = False
     rumbling = False
+    gravity = 1
 
 def movechar(scene, platformer):
     global rumbling, velocityY, isJumping

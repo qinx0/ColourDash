@@ -70,6 +70,25 @@ def main_loop(camera):
 
             if engine_io.MENU.is_just_pressed:
                 running = False
+            
+            if engine_io.LB.is_just_pressed:
+                platformer = not platformer
+                engine_save.save("platformer", int(platformer))
+                print(f"Platformer is {platformer}")
+            if engine_io.RB.is_just_pressed:
+                hitboxes = not hitboxes
+                engine_save.save("hitbox_visual", int(hitboxes))
+                print(f"Hitbox visuals are {hitboxes}")
+                if hitboxes:
+                    player.playerBodyRect.opacity = 0.3
+                    player.playerDeadlyRect.opacity = 0.3
+                    for i in scene:
+                        i.hitboxRect.opacity = 0.3
+                else:
+                    player.playerBodyRect.opacity = 0.0
+                    player.playerDeadlyRect.opacity = 0.0
+                    for i in scene:
+                        i.hitboxRect.opacity = 0.0
 
             camera.position.x = player.cube.position.x
             player.movechar(scene, platformer)

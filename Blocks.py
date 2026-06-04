@@ -24,7 +24,7 @@ offsetRot = [Vector2(0,-1),Vector2(-1,-1),Vector2(0,-1),Vector2(-1,0),Vector2(-1
 radRotrounding = 1
 #rouding radian rotation check:
 #1 decimal: nope
-portals = [Vector2(c[0], c[1]) for c in blocklist.PORTAL_COORDS]
+portals = [Vector2(c[1][0], c[1][1]) for c in blocklist.PORTAL_COORDS]
 
 blocks = TextureResource("Images/blocks.bmp")
 portalsimg = TextureResource("Images/portals.bmp")

@@ -50,10 +50,10 @@ GD_OBJECT_MAP = {
     8:    {"cord": blocklist.SPIKE_NORMAL,        "deadly": True,  "tag": "Deadly"},
     1716: {"cord": blocklist.SPIKE_GROUND,        "deadly": True,  "tag": "Deadly"},
     39:   {"cord": blocklist.SPIKE_FLAT,          "deadly": True,  "tag": "Deadly"},
-    35:   {"cord": blocklist.PORTAL_GRAVITY_DOWN, "deadly": False, "tag": "Portal"},
-    36:   {"cord": blocklist.PORTAL_GRAVITY_UP,   "deadly": False, "tag": "Portal"},
-    12:   {"cord": blocklist.PORTAL_CUBE,         "deadly": False, "tag": "Portal"},
-    13:   {"cord": blocklist.PORTAL_SHIP,         "deadly": False, "tag": "Portal"},
+    10:   {"cord": blocklist.PORTAL_GRAVITY_DOWN, "deadly": False, "tag": "Portal"},
+    11:   {"cord": blocklist.PORTAL_GRAVITY_UP,   "deadly": False, "tag": "Portal"},
+    13:   {"cord": blocklist.PORTAL_CUBE,         "deadly": False, "tag": "Portal"},
+    12:   {"cord": blocklist.PORTAL_SHIP,         "deadly": False, "tag": "Portal"},
 }
 
 # GD ground baseline in GD units (objects at y=0 sit on the ground floor)
