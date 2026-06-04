@@ -38,7 +38,7 @@ from gmdkit.mappings import obj_prop
 #   13  = ball portal
 
 GD_OBJECT_MAP = {
-    1:  {"cord": [1, 0], "deadly": False, "tag": "Block"},
+    1:  {"cord": [0, 0], "deadly": False, "tag": "Block"},
     2:  {"cord": [2, 0], "deadly": False, "tag": "Block"},
     3:  {"cord": [3, 0], "deadly": False, "tag": "Block"},
     6:  {"cord": [1, 1], "deadly": True,  "tag": "Deadly"},
@@ -62,7 +62,7 @@ def gd_to_cd_pos(gd_x, gd_y):
     GD Y is positive=up, ColourDash Y is positive=down.
     GD starts levels at x=0, ColourDash at x=-4 (roughly).
     """
-    cd_x = round(gd_x / GD_UNIT) - 4
+    cd_x = int(gd_x / GD_UNIT + 0.5)
     cd_y = CD_GROUND_Y - round(gd_y / GD_UNIT)
     return cd_x, cd_y
 

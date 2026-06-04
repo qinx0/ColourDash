@@ -5,3 +5,5 @@ ignore.txt
 .vscode
 for\ calc
 .DS_Store
+.venv
+venv

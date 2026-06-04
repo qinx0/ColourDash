@@ -66,6 +66,13 @@ def checkCollision(scene, on_death):
         elif minOverlap == overlapRight:
             cube.position.x = bR + 8
 
+def reset():
+    global velocityY, isJumping, rumbling
+    cube.position = Vector2(-64+8, 0)
+    velocityY = 0
+    isJumping = False
+    rumbling = False
+
 def restartLevel():
     global velocityY, isJumping, rumbling
     cube.position = Vector2(-64+8, 0)

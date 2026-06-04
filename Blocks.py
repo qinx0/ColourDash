@@ -1,6 +1,6 @@
 import engine_main # type: ignore
 import engine # type: ignore
-from engine_nodes import Sprite2DNode # type: ignore
+from engine_nodes import Sprite2DNode, Rectangle2DNode # type: ignore
 from engine_resources import TextureResource # type: ignore
 from engine_math import Vector2 # type: ignore
 import math
@@ -46,9 +46,11 @@ class block:
         self.rot = rot
         self.scale = Vector2(1,1)
         self.portal = portal
-        self.hitbox_half = 8  # default
+        self.hitbox_half = Vector2(8,8)  # default, _half because AABB uses center +/- the hitbox half. full hitbox is hitbox_helf.x and .y by 2
+        self.hitbox_offset = Vector2(0,0)
         if self.deadly:
-            self.hitbox_half = 5
+            self.hitbox_half = Vector2(3,4)
+            self.hitbox_offset.y = -3
         if self.portal:
             self.hitbox_half = Vector2(8, 16)
 
@@ -96,15 +98,24 @@ class block:
         self.Block.position = self.pos
         self.Block.rotation = self.rot
         self.Block.scale = self.scale
+        self.hitboxRect = Rectangle2DNode(
+            position = Vector2(self.pos.x - self.hitbox_offset.x, self.pos.y - self.hitbox_offset.y),
+            width = self.hitbox_half.x*2,
+            height = self.hitbox_half.y*2,
+            color = Color(1,0,0) if self.deadly else Color(0,0,1),
+            outline = False,
+            opacity = 0.0
+        )
         debug.dashedSeperator(75)
         print(f'Block rotation is {self.Block.rotation}')
+        print(f'Block position is (x{self.Block.position.x}, y{self.Block.position.y})')
         print(f'Block scale is (x{self.Block.scale.x}, y{self.Block.scale.y})')
         print(f'Portal: {self.portal}')
         print(f'Block texture Coords: (x{self.cord.x}, y{self.cord.y})')
         debug.dashedSeperator(75, True)
         
-        def __repr__(self):
-            return f"block(cord={self.cord}, pos={self.pos})"
+    def __repr__(self):
+        return f"block(cord={self.cord}, pos={self.pos})"
         
 def getBlock(cord, portal):
     if portal == True:
