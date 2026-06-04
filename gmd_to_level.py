@@ -5,83 +5,16 @@ Desktop tool to convert a Geometry Dash .gmd file into ColourDash's level.json f
 Usage:
     pip install gmdkit
     python gmd_to_level.py mylevel.gmd level.json
-
-GD coordinates use 30px units. ColourDash uses a 16px grid.
-GD Y axis is inverted (positive = up), ColourDash Y is positive = down.
-The ground in ColourDash is at y=2 (after 16px scaling + offset).
 """
 
 import json
 import sys
-import blocklist
 from gmdkit import Level
 from gmdkit.mappings import obj_prop
 
-# --- Sprite mapping ---
-# Maps GD object ID -> ColourDash block data
-# cord: (x, y) index into blocks.bmp spritesheet (6x6 grid) via blocklist.py
-# deadly: whether this object kills the player
-# tag: block type tag
-#
-# To add more objects, find the GD object ID and map it here.
-# GD 1.0 common IDs:
-#   1   = basic block
-#   2   = dirt block  
-#   3   = stone block
-#   6   = short spike (up)
-#   7   = medium spike
-#   8   = tall spike
-#   9   = small cube decoration
-#   10  = medium cube decoration
-#   35  = gravity portal (up)
-#   36  = gravity portal (down)
-#   12  = ship portal
-#   13  = ball portal
-
-GD_OBJECT_MAP = {
-    1:    {"cord": blocklist.BLOCK_DEFAULT,       "deadly": False, "tag": "Block"},
-    2:    {"cord": blocklist.GRIDBLOCK_1,         "deadly": False, "tag": "Block"},
-    3:    {"cord": blocklist.GRIDBLOCK_2,         "deadly": False, "tag": "Block"},
-    4:    {"cord": blocklist.GRIDBLOCK_3,         "deadly": False, "tag": "Block"},
-    5:    {"cord": blocklist.GRIDBLOCK_4,         "deadly": False, "tag": "Block"},
-    6:    {"cord": blocklist.GRIDBLOCK_5,         "deadly": False, "tag": "Block"},
-    7:    {"cord": blocklist.GRIDBLOCK_6,         "deadly": False, "tag": "Block"},
-    40:   {"cord": blocklist.BLOCK_HALF,          "deadly": False, "tag": "Block"},
-    8:    {"cord": blocklist.SPIKE_NORMAL,        "deadly": True,  "tag": "Deadly"},
-    1716: {"cord": blocklist.SPIKE_GROUND,        "deadly": True,  "tag": "Deadly"},
-    39:   {"cord": blocklist.SPIKE_FLAT,          "deadly": True,  "tag": "Deadly"},
-    10:   {"cord": blocklist.PORTAL_GRAVITY_DOWN, "deadly": False, "tag": "Portal"},
-    11:   {"cord": blocklist.PORTAL_GRAVITY_UP,   "deadly": False, "tag": "Portal"},
-    13:   {"cord": blocklist.PORTAL_CUBE,         "deadly": False, "tag": "Portal"},
-    12:   {"cord": blocklist.PORTAL_SHIP,         "deadly": False, "tag": "Portal"},
-}
-
-# GD ground baseline in GD units (objects at y=0 sit on the ground floor)
-GD_UNIT = 30        # GD uses 30px per grid unit
-CD_UNIT = 16        # ColourDash uses 16px per grid unit
-GD_GROUND_Y = 0     # GD ground level in GD units
-CD_GROUND_Y = 2     # ColourDash ground row in grid units
-
-def gd_to_cd_pos(gd_x, gd_y):
-    """
-    Convert GD absolute pixel coords to ColourDash grid units.
-    GD Y is positive=up, ColourDash Y is positive=down.
-    GD starts levels at x=0, ColourDash at x=-4 (roughly).
-    """
-    cd_x = int(gd_x / GD_UNIT + 0.5)
-    cd_y = CD_GROUND_Y - round(gd_y / GD_UNIT)
-    return cd_x, cd_y
-
-def gd_to_cd_rot(gd_rot):
-    """Convert GD rotation degrees to ColourDash rotation value."""
-    if gd_rot is None or gd_rot == 0:
-        return 0
-    # GD and ColourDash both use degrees, just pass through
-    # ColourDash handles: -90, -180, -270, 90, 180, 270
-    r = int(gd_rot) % 360
-    if r > 180:
-        r -= 360
-    return r
+# GD_OBJECT_MAP, GD_UNIT, CD_UNIT, GD_GROUND_Y, CD_GROUND_Y,
+# gd_to_cd_pos(), and gd_to_cd_rot() are all in blocklist.py
+import blocklist
 
 def convert(gmd_path, output_path):
     print(f"Loading {gmd_path}...")
@@ -96,20 +29,20 @@ def convert(gmd_path, output_path):
 
     for obj in objects:
         obj_id = obj.get(obj_prop.ID)
-        if obj_id not in GD_OBJECT_MAP:
+        if obj_id not in blocklist.GD_OBJECT_MAP:
             skipped += 1
             skippedN.append(str(obj_id))
             continue
 
-        mapping = GD_OBJECT_MAP[obj_id]
+        mapping = blocklist.GD_OBJECT_MAP[obj_id]
 
         gd_x = obj.get(obj_prop.X, 0)
         gd_y = obj.get(obj_prop.Y, 0)
         gd_rot = obj.get(obj_prop.ROTATION, 0)
         gd_flip_x = obj.get(obj_prop.FLIP_X, False)
 
-        cd_x, cd_y = gd_to_cd_pos(gd_x, gd_y)
-        cd_rot = gd_to_cd_rot(gd_rot)
+        cd_x, cd_y = blocklist.gd_to_cd_pos(gd_x, gd_y)
+        cd_rot = blocklist.gd_to_cd_rot(gd_rot)
         if gd_flip_x:
             cd_rot = -cd_rot  # mirror rotation for flipped objects
 

@@ -10,7 +10,7 @@ import engine_save
 
 print("start")
 
-level = "test.json"
+level = "ColourDash Test.gmd"
 
 running = False
 frame = 0
@@ -37,7 +37,11 @@ def main_loop(camera):
     player.reset()
     camera.position = Vector2(0, 0)
 
-    scene = levelParser.parse_json_file(level)
+    if level.endswith(".json"):
+        scene = levelParser.parse_json_file(level)
+    else:
+        import gmd_parser
+        scene = gmd_parser.parse_gmd_file(level)
 
     menuloop = WaveSoundResource("Sounds/gdmenuloop.wav")
     engine_audio.set_volume(1.0)
