@@ -39,16 +39,21 @@ from gmdkit.mappings import obj_prop
 #   13  = ball portal
 
 GD_OBJECT_MAP = {
-    1:  {"cord": blocklist.BLOCK_DEFAULT,       "deadly": False, "tag": "Block"},
-     2:  {"cord": blocklist.GRIDBLOCK_1,         "deadly": False, "tag": "Block"},
-     3:  {"cord": blocklist.GRIDBLOCK_2,         "deadly": False, "tag": "Block"},
-    6:  {"cord": blocklist.SPIKE_NORMAL,        "deadly": True,  "tag": "Deadly"},
-    7:  {"cord": blocklist.SPIKE_NORMAL,        "deadly": True,  "tag": "Deadly"},
-    8:  {"cord": blocklist.SPIKE_NORMAL,        "deadly": True,  "tag": "Deadly"},
-    35: {"cord": blocklist.PORTAL_GRAVITY_DOWN, "deadly": False, "tag": "Portal"},
-    36: {"cord": blocklist.PORTAL_GRAVITY_UP,   "deadly": False, "tag": "Portal"},
-     12: {"cord": blocklist.PORTAL_CUBE,         "deadly": False, "tag": "Portal"},
-     13: {"cord": blocklist.PORTAL_SHIP,         "deadly": False, "tag": "Portal"},
+    1:    {"cord": blocklist.BLOCK_DEFAULT,       "deadly": False, "tag": "Block"},
+    2:    {"cord": blocklist.GRIDBLOCK_1,         "deadly": False, "tag": "Block"},
+    3:    {"cord": blocklist.GRIDBLOCK_2,         "deadly": False, "tag": "Block"},
+    4:    {"cord": blocklist.GRIDBLOCK_3,         "deadly": False, "tag": "Block"},
+    5:    {"cord": blocklist.GRIDBLOCK_4,         "deadly": False, "tag": "Block"},
+    6:    {"cord": blocklist.GRIDBLOCK_5,         "deadly": False, "tag": "Block"},
+    7:    {"cord": blocklist.GRIDBLOCK_6,         "deadly": False, "tag": "Block"},
+    40:   {"cord": blocklist.BLOCK_HALF,          "deadly": False, "tag": "Block"},
+    8:    {"cord": blocklist.SPIKE_NORMAL,        "deadly": True,  "tag": "Deadly"},
+    1716: {"cord": blocklist.SPIKE_GROUND,        "deadly": True,  "tag": "Deadly"},
+    39:   {"cord": blocklist.SPIKE_FLAT,          "deadly": True,  "tag": "Deadly"},
+    35:   {"cord": blocklist.PORTAL_GRAVITY_DOWN, "deadly": False, "tag": "Portal"},
+    36:   {"cord": blocklist.PORTAL_GRAVITY_UP,   "deadly": False, "tag": "Portal"},
+    12:   {"cord": blocklist.PORTAL_CUBE,         "deadly": False, "tag": "Portal"},
+    13:   {"cord": blocklist.PORTAL_SHIP,         "deadly": False, "tag": "Portal"},
 }
 
 # GD ground baseline in GD units (objects at y=0 sit on the ground floor)
@@ -86,12 +91,14 @@ def convert(gmd_path, output_path):
     print(f"Found {len(objects)} objects, converting...")
     
     skipped = 0
+    skippedN = []
     output = []
 
     for obj in objects:
         obj_id = obj.get(obj_prop.ID)
         if obj_id not in GD_OBJECT_MAP:
             skipped += 1
+            skippedN.append(str(obj_id))
             continue
 
         mapping = GD_OBJECT_MAP[obj_id]
@@ -120,6 +127,8 @@ def convert(gmd_path, output_path):
         json.dump(output, f, indent=4)
 
     print(f"Done! Converted {len(output)} objects, skipped {skipped} unsupported objects.")
+    if len(skippedN) > 0:
+        print(f"Skipped: {skippedN}")
     print(f"Saved to {output_path}")
 
 if __name__ == "__main__":

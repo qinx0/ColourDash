@@ -2,13 +2,17 @@
 
 BLOCK_DEFAULT = (0, 0)
 GRIDBLOCK_1   = (1, 0)
-GRIDBLOCK_2   = (0, 1)
+GRIDBLOCK_2   = (2, 0)
+GRIDBLOCK_3   = (3, 0)
+GRIDBLOCK_4   = (4, 0)
+GRIDBLOCK_5   = (5, 0)
+GRIDBLOCK_6   = (0, 1)
+BLOCK_HALF    = (4, 1)
 
 SPIKE_NORMAL  = (1, 1)
 SPIKE_FLAT    = (2, 1)
 SPIKE_GROUND  = (3, 1)
 
-BLOCK_HALF    = (4, 1)
 JUMP_PAD      = (5, 1)
 JUMP_ORB      = (0, 2)
 

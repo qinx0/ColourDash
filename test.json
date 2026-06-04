@@ -1,6 +1,14 @@
 [
     [
-        "Vector2(0,0)",
+        "Vector2(1,1)",
+        "Vector2(12,2)",
+        true,
+        false,
+        "Deadly",
+        0
+    ],
+    [
+        "Vector2(2,0)",
         "Vector2(8,2)",
         false,
         false,
@@ -8,7 +16,7 @@
         0
     ],
     [
-        "Vector2(0,0)",
+        "Vector2(1,0)",
         "Vector2(9,2)",
         false,
         false,
@@ -16,7 +24,7 @@
         0
     ],
     [
-        "Vector2(0,0)",
+        "Vector2(1,0)",
         "Vector2(10,2)",
         false,
         false,
@@ -24,19 +32,43 @@
         0
     ],
     [
-        "Vector2(0,0)",
+        "Vector2(2,0)",
         "Vector2(11,2)",
         false,
         false,
         "Block",
-        0
+        90
     ],
     [
         "Vector2(1,1)",
-        "Vector2(12,2)",
+        "Vector2(13,2)",
         true,
         false,
         "Deadly",
+        0
+    ],
+    [
+        "Vector2(2,1)",
+        "Vector2(14,2)",
+        true,
+        false,
+        "Deadly",
+        0
+    ],
+    [
+        "Vector2(3,1)",
+        "Vector2(7,2)",
+        true,
+        false,
+        "Deadly",
+        0
+    ],
+    [
+        "Vector2(4,1)",
+        "Vector2(15,2)",
+        false,
+        false,
+        "Block",
         0
     ]
 ]
