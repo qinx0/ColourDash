@@ -1,4 +1,3 @@
-import sys
 import engine # type: ignore
 from engine_resources import WaveSoundResource, TextureResource # type: ignore
 import engine_io # type: ignore
@@ -6,6 +5,7 @@ import engine_draw # type: ignore
 from engine_math import Vector2 # type: ignore
 import engine_audio # type: ignore
 import levelParser
+import gmd_parser
 import player
 import engine_save
 
@@ -44,11 +44,10 @@ def main_loop(camera):
     if level.endswith(".json"):
         scene = levelParser.parse_json_file(level)
     else:
-        import gmd_parser
         try:
             scene = gmd_parser.parse_gmd_file(level)
         except Exception as e:
-            sys.print_exception(e)
+            print(e)
             print("falling back to level.json")
             scene = levelParser.parse_json_file("level.json")
 
@@ -65,13 +64,13 @@ def main_loop(camera):
     engine_draw.set_background(background_texture)
 
     if hitboxes:
-        player.playerBodyRect.opacity = 0.3
-        player.playerDeadlyRect.opacity = 0.3
+        if player.playerBodyRect: player.playerBodyRect.opacity = 0.3
+        if player.playerDeadlyRect: player.playerDeadlyRect.opacity = 0.3
         for i in scene:
             i.hitboxRect.opacity = 0.3
     else:
-        player.playerBodyRect.opacity = 0.0
-        player.playerDeadlyRect.opacity = 0.0
+        if player.playerBodyRect: player.playerBodyRect.opacity = 0.0
+        if player.playerDeadlyRect: player.playerDeadlyRect.opacity = 0.0
         for i in scene:
             i.hitboxRect.opacity = 0.0
 
@@ -96,18 +95,18 @@ def main_loop(camera):
                 engine_save.save("hitbox_visual", int(hitboxes))
                 print(f"Hitbox visuals are {hitboxes}")
                 if hitboxes:
-                    player.playerBodyRect.opacity = 0.3
-                    player.playerDeadlyRect.opacity = 0.3
+                    if player.playerBodyRect: player.playerBodyRect.opacity = 0.3
+                    if player.playerDeadlyRect: player.playerDeadlyRect.opacity = 0.3
                     for i in scene:
                         i.hitboxRect.opacity = 0.3
                 else:
-                    player.playerBodyRect.opacity = 0.0
-                    player.playerDeadlyRect.opacity = 0.0
+                    if player.playerBodyRect: player.playerBodyRect.opacity = 0.0
+                    if player.playerDeadlyRect: player.playerDeadlyRect.opacity = 0.0
                     for i in scene:
                         i.hitboxRect.opacity = 0.0
 
-            camera.position.x = player.cube.position.x
             player.movechar(scene, platformer)
+            camera.position = Vector2(player.cube.position.x, 0)
 
     engine_audio.stop(3)
 

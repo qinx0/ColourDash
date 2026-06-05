@@ -19,23 +19,9 @@ groundLevel = 37
 portalsTouching = set()
 
 cubeTex = TextureResource("Images/cube.bmp")
-cube = Sprite2DNode(texture=cubeTex, position=Vector2(-64+8, 0))
-playerBodyRect = Rectangle2DNode(
-    position = cube.position,
-    width = PLAYER_HALF_X*2,
-    height = PLAYER_HALF_Y*2,
-    color = Color(0,0,1),
-    outline = False,
-    opacity = 0.0
-)
-playerDeadlyRect = Rectangle2DNode(
-    position = cube.position,
-    width = DEADLY_HALF_X*2,
-    height = DEADLY_HALF_Y*2,
-    color = Color(1,0,0),
-    outline = False,
-    opacity = 0.0
-)
+cube = Sprite2DNode(texture=cubeTex, position=Vector2(-64+8, 0), frame_count_x=1, frame_count_y=1, transparent_color=Color(1,0,1), playing=False)
+playerBodyRect = None
+playerDeadlyRect = None
 
 def flipGravity():
     global gravity
@@ -107,7 +93,7 @@ def checkCollision(scene, on_death):
             cube.position.x = bR + PLAYER_HALF_X
 
 def reset():
-    global velocityY, isJumping, rumbling, gravity
+    global cube, playerBodyRect, playerDeadlyRect, velocityY, isJumping, rumbling, gravity
     cube.position = Vector2(-64 + PLAYER_HALF_X, 0)
     velocityY = 0
     isJumping = False
@@ -115,7 +101,7 @@ def reset():
     gravity = 1
 
 def restartLevel():
-    global velocityY, isJumping, rumbling, gravity
+    global velocityY, isJumping, rumbling, gravity, cube, playerBodyRect, playerDeadlyRect
     cube.position = Vector2(-64 + PLAYER_HALF_X, 0)
     velocityY = 0
     isJumping = False
@@ -149,5 +135,5 @@ def movechar(scene, platformer):
     if engine_io.RIGHT.is_pressed and platformer:
         cube.position.x += moveSpeed
     
-    playerBodyRect.position = cube.position
-    playerDeadlyRect.position = cube.position
+    if playerBodyRect: playerBodyRect.position = cube.position
+    if playerDeadlyRect: playerDeadlyRect.position = cube.position
