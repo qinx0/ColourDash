@@ -58,23 +58,25 @@ class block:
         self.pos.x = self.pos.x * 16# - 8
         self.pos.y = self.pos.y * 16 + 5
 
-        debug.centredTextPrintout("Block Info", 75)
+        if debug.debug:
+            debug.centredTextPrintout("Block Info", 75)
 
         # Correct rotation and position offset to be accurate
         if self.rot in rotDeg:
             if self.rot > 0:
-                print(f'Changed rot from: {rot} to {exactRotRad[rotDeg.index(rot)]}, Math.radians would return: {math.radians(self.rot)}')
+                if debug.debug: print(f'Changed rot from: {rot} to {exactRotRad[rotDeg.index(rot)]}, Math.radians would return: {math.radians(self.rot)}')
                 if self.rot == 270:
                     self.scale.y = -1
                     self.scale.x = -1
-                    print("Rotation is 270; flipped the y and x")
+                    if debug.debug: print("Rotation is 270; flipped the y and x")
             else:
-                print(f'Changed rot from: {rot} to {exactRotRad[rotDeg.index(rot)]}, Math.radians would return: {math.radians(self.rot)}')
+                if debug.debug: print(f'Changed rot from: {rot} to {exactRotRad[rotDeg.index(rot)]}, Math.radians would return: {math.radians(self.rot)}')
                 if self.rot == -90: self.scale.x = -1; self.scale.y = -1
             self.rot = exactRotRad[rotDeg.index(rot)]
             self.pos.x += offsetRot[rotDeg.index(rot)].x
             self.pos.y += offsetRot[rotDeg.index(rot)].y
-        else: print("Rotation is 0, not offsetting")
+        else:
+            if debug.debug: print("Rotation is 0, not offsetting")
 
             # Check if portal and change sprite accordingly
         if self.portal:
@@ -107,13 +109,14 @@ class block:
             outline = False,
             opacity = 0.0
         )
-        debug.dashedSeperator(75)
-        print(f'Block rotation is {self.Block.rotation}')
-        print(f'Block position is (x{self.Block.position.x}, y{self.Block.position.y})')
-        print(f'Block scale is (x{self.Block.scale.x}, y{self.Block.scale.y})')
-        print(f'Portal: {self.portal}')
-        print(f'Block texture Coords: (x{self.cord.x}, y{self.cord.y})')
-        debug.dashedSeperator(75, True)
+        if debug.debug:
+            debug.dashedSeperator(75)
+            print(f'Block rotation is {self.Block.rotation}')
+            print(f'Block position is (x{self.Block.position.x}, y{self.Block.position.y})')
+            print(f'Block scale is (x{self.Block.scale.x}, y{self.Block.scale.y})')
+            print(f'Portal: {self.portal}')
+            print(f'Block texture Coords: (x{self.cord.x}, y{self.cord.y})')
+            debug.dashedSeperator(75, True)
         
     def __repr__(self):
         return f"block(cord={self.cord}, pos={self.pos})"

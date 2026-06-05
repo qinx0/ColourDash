@@ -1,4 +1,6 @@
 # Nice functions for good looking debug printouts
+debug = False
+
 def centredTextPrintout(Text, width = 75):
     padding = (width - len(Text)) // 2
     line = "-" * padding + Text + "-" * padding

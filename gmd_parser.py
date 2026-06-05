@@ -1,4 +1,4 @@
-import ubinascii, deflate, uio, ure
+import ubinascii, deflate, uio
 import blocklist
 from blocks import block
 from engine_math import Vector2
@@ -7,10 +7,15 @@ def parse_gmd_file(path):
     with open(path) as f:
         content = f.read()
 
-    m = ure.search("<k>k4</k><s>([^<]+)</s>", content)
-    if not m:
+    marker = "<k>k4</k><s>"
+    start = content.find(marker)
+    if start < 0:
         raise ValueError("Could not find k4 data in .gmd file")
-    raw = m.group(1)
+    start += len(marker)
+    end = content.find("</s>", start)
+    if end < 0:
+        raise ValueError("Could not find end of k4 data in .gmd file")
+    raw = content[start:end]
     raw = raw.replace("-", "+").replace("_", "/")
 
     decoded = ubinascii.a2b_base64(raw)
@@ -26,6 +31,7 @@ def parse_gmd_file(path):
     game_data = text[semi + 1:]
 
     objs = game_data.split(";")
+    MAX_BLOCKS = 200
     result = []
     for obj_str in objs:
         obj_str = obj_str.strip()
@@ -65,5 +71,7 @@ def parse_gmd_file(path):
             cd_rot
         )
         result.append(b)
+        if len(result) >= MAX_BLOCKS:
+            break
 
     return result

@@ -1,3 +1,4 @@
+import sys
 import engine # type: ignore
 from engine_resources import WaveSoundResource, TextureResource # type: ignore
 import engine_io # type: ignore
@@ -17,6 +18,9 @@ frame = 0
 platformer = False
 hitboxes = False
 
+_sound_loaded = False
+_menuloop = None
+
 def gameOver():
     global running
     running = False
@@ -25,7 +29,7 @@ def levelEnd():
     return
 
 def main_loop(camera):
-    global running, frame, platformer, hitboxes
+    global running, frame, platformer, hitboxes, _sound_loaded, _menuloop
 
     engine_save._init_saves_dir("/Saves/ColourDash")
     engine_save.set_location("options.data")
@@ -41,11 +45,19 @@ def main_loop(camera):
         scene = levelParser.parse_json_file(level)
     else:
         import gmd_parser
-        scene = gmd_parser.parse_gmd_file(level)
+        try:
+            scene = gmd_parser.parse_gmd_file(level)
+        except Exception as e:
+            sys.print_exception(e)
+            print("falling back to level.json")
+            scene = levelParser.parse_json_file("level.json")
 
-    menuloop = WaveSoundResource("Sounds/gdmenuloop.wav")
+    if not _sound_loaded:
+        _menuloop = WaveSoundResource("Sounds/gdmenuloop.wav")
+        _sound_loaded = True
+
     engine_audio.set_volume(1.0)
-    loop = engine_audio.play(menuloop, 3, True)
+    loop = engine_audio.play(_menuloop, 3, True)
     loop.gain = 4.0
 
     engine.fps_limit(60)
@@ -96,4 +108,6 @@ def main_loop(camera):
 
             camera.position.x = player.cube.position.x
             player.movechar(scene, platformer)
+
+    engine_audio.stop(3)
 
