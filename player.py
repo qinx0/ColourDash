@@ -117,14 +117,14 @@ def restartLevel():
     rumbling = False
     gravity = 1
 
-def movechar(scene, platformer):
+def movechar(scene, platformer, on_death=None):
     global rumbling, velocityY, isJumping
 
     velocityY += gravity
     cube.position.y += velocityY
     # print("y:", cube.position.y, "vy:", velocityY)
 
-    checkCollision(scene, on_death=restartLevel)
+    checkCollision(scene, on_death=on_death if on_death else restartLevel)
 
     if not platformer:
         cube.position.x += 2.2
@@ -139,6 +139,7 @@ def movechar(scene, platformer):
         isJumping = True
         engine_io.rumble(0.35)
         rumbling = True
+        return True
 
     if engine_io.LEFT.is_pressed and platformer:
         cube.position.x -= moveSpeed
@@ -147,3 +148,4 @@ def movechar(scene, platformer):
     
     if playerBodyRect: playerBodyRect.position = cube.position
     if playerDeadlyRect: playerDeadlyRect.position = cube.position
+    return False

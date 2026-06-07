@@ -1,16 +1,16 @@
 import sys
 import os  
-import engine_main # type: ignore
+import engine_main
 import engine_save
-import engine # type: ignore
-import engine_io # type: ignore
-import engine_draw # type: ignore
-import engine_resources # type: ignore
+import engine
+import engine_io
+import engine_draw
+import engine_resources
 import math
 from time import ticks_ms
-from engine_nodes import Sprite2DNode, CameraNode, Text2DNode, Rectangle2DNode # type: ignore
-from engine_math import Vector2 # type: ignore
-# import gamelevel
+from engine_nodes import Sprite2DNode, CameraNode, Rectangle2DNode
+from engine_math import Vector2
+from outlinedText import OutlinedTextNode
 
 if sys.platform != "rp2":
     sys.path.append("Games/ColourDash")
@@ -30,7 +30,16 @@ def RGB888to565(c):
 bg = Sprite2DNode(texture = engine_resources.TextureResource("Images/bg.bmp"), layer = 0)
 bgcolour = Rectangle2DNode(color = engine_draw.Color(0.0,0.0,0.0), opacity = 0.5, width = 128, height = 128, layer = 1)
 Font = engine_resources.FontResource("Font/pixelatedPusab.bmp")
-title = Text2DNode(Vector2(0,-16),Font,"ColourDash",0.0,Vector2(0.55,0.55),1.0,0.0,0.0,engine_draw.Color(1.0,1.0,1.0), layer = 2)
+# title = Text2DNode(Vector2(0,-16),Font,"ColourDash",0.0,Vector2(0.55,0.55),1.0,0.0,0.0,engine_draw.Color(1.0,1.0,1.0), layer = 2)
+title = OutlinedTextNode(
+    Vector2(0,-16),
+    Font,
+    "ColourDash",
+    Vector2(0.55,0.55),
+    engine_draw.Color(1.0,1.0,1.0),
+    engine_draw.Color(0.0,0.0,0.0),
+    layer = 2
+)
 Button = Sprite2DNode(Vector2(0,29), engine_resources.TextureResource("Images/startButton.bmp"), engine_draw.Color(1.0,0.0,1.0), layer = 2)
 camera = CameraNode()
 
