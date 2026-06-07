@@ -9,24 +9,32 @@ PLAYER_HALF_X = 8
 PLAYER_HALF_Y = 8
 DEADLY_HALF_X = 3
 DEADLY_HALF_Y = 3
-moveSpeed = 3.5
+moveSpeed = 11.540004 * (16 / 60)
 velocityY = 0
 isJumping = False
 rumbling = False
 gravity = 1
-jumpForce = -10
+
+jumpBlocks = 2.15
+target_px = jumpBlocks * 16
+
+jumpForce = -((-1 + (1 + 8 * target_px) ** 0.5) / 2)
+
 groundLevel = 37
 portalsTouching = set()
 
 cubeTex = TextureResource("Images/cube.bmp")
 cube = Sprite2DNode(texture=cubeTex, position=Vector2(-64+8, 0), frame_count_x=1, frame_count_y=1, transparent_color=Color(1,0,1), playing=False)
-playerBodyRect = None
-playerDeadlyRect = None
+playerBodyRect = Rectangle2DNode(position=cube.position, width=PLAYER_HALF_X*2, height=PLAYER_HALF_Y*2, color=Color(0,0,1.0), opacity=0.0)
+playerDeadlyRect = Rectangle2DNode(position=cube.position, width=DEADLY_HALF_X*2, height=DEADLY_HALF_Y*2, color=Color(1.0,0,0), opacity=0.0)
 
-def flipGravity():
-    global gravity
-    if gravity == 1: gravity = -1
-    else: gravity = 1
+def flipGravity(object):
+    global gravity, jumpForce
+    if (object.cord.x == 0 and gravity == -1) or (object.cord.x == 1 and gravity == 1):
+        if gravity == 1: gravity = -1
+        else: gravity = 1
+        jumpForce = jumpForce *-1
+        # print(f' Flipped, gravity: {gravity}, jumpforce: {jumpForce}')
 
 def getAABB(pos, half_x=PLAYER_HALF_X, half_y=PLAYER_HALF_Y):
     half_x = float(half_x)
@@ -65,8 +73,8 @@ def checkCollision(scene, on_death):
             if id(obj) not in portalsTouching:
                 portalsTouching.add(id(obj))
                 if obj.cord.y == 0:
-                    if (obj.cord.x == 0 and gravity == -1) or (obj.cord.x == 1 and gravity == 1):
-                        flipGravity()
+                    # if (obj.cord.x == 0 and gravity == -1) or (obj.cord.x == 1 and gravity == 1):
+                    flipGravity(obj)
             continue
         else:
             aL, aR, aT, aB = bodyL, bodyR, bodyT, bodyB
@@ -87,6 +95,7 @@ def checkCollision(scene, on_death):
         elif minOverlap == overlapBottom:
             cube.position.y = bB + PLAYER_HALF_Y
             velocityY = 0
+            isJumping = False 
         elif minOverlap == overlapLeft:
             cube.position.x = bL - PLAYER_HALF_X
         elif minOverlap == overlapRight:
@@ -113,13 +122,14 @@ def movechar(scene, platformer):
 
     velocityY += gravity
     cube.position.y += velocityY
+    # print("y:", cube.position.y, "vy:", velocityY)
 
     checkCollision(scene, on_death=restartLevel)
 
     if not platformer:
         cube.position.x += 2.2
 
-    if cube.position.y >= groundLevel:
+    if cube.position.y >= groundLevel and gravity > 0:
         cube.position.y = groundLevel
         velocityY = 0
         isJumping = False
